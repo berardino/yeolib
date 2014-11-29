@@ -1,10 +1,6 @@
 cmake_minimum_required (VERSION 3.0)
 project (yeorenderer)
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-show-option")
-
-option(BUILD_EXAMPLES "Build examples." on)
-
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(PkgConfig REQUIRED)

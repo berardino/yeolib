@@ -1,11 +1,11 @@
 project (yeorenderer)
 
 find_package(OpenGL REQUIRED)
-find_package(GLEW REQUIRED)
 
-pkg_search_module(GLFW REQUIRED glfw3)
+pkg_search_module(GLEW REQUIRED glew)
+pkg_search_module(GLFW REQUIRED glfw3 glfw)
 
-include_directories(include ${GLFW_INCLUDE_DIRS} ../yeomath/include)
+include_directories(include ${GLFW_INCLUDE_DIRS} ${GLEW_INCLUDE_DIRS}  ../yeomath/include)
 link_directories(/opt/local/lib)
 
 add_library(yeorenderer SHARED src/renderer.cpp)

@@ -42,6 +42,7 @@ public:
         if (GLEW_OK != err) {
             fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
         }
+        glEnable(GL_SCISSOR_TEST);
     }
     
     void Present() {
@@ -52,11 +53,30 @@ public:
         return glfwWindowShouldClose(window);
     }
     
-    
-    void Clear() {
-        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    void SetViewport(int x, int y, int width, int height) {
+        glViewport(x, y, width, height);
+        glScissor(x, y, width, height);
+    }
+
+    void GetFramebufferSize(int* width, int* height) {
+        glfwGetFramebufferSize(window, width, height);
     }
     
+    void Clear() {
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+
+    void SetProjectionMatrix(const float4x4& matrix) {
+        glMatrixMode(GL_PROJECTION);
+        glLoadMatrixf(matrix.memptr());
+    }
+
+    void SetViewMatrix(const float4x4& matrix) {
+        glMatrixMode(GL_MODELVIEW);
+        glLoadMatrixf(matrix.memptr());
+    }
+
     string GetVersion() {
         return reinterpret_cast<char const *>(glGetString(GL_VERSION));
     }
@@ -76,6 +96,11 @@ public:
     void PollEvents(){
         glfwPollEvents();
     }
+
+    void WaitEvents(){
+        glfwWaitEvents();
+    }
+
 };
 
 YEO_API shared_ptr<Renderer> YeoCreateRenderer(void){

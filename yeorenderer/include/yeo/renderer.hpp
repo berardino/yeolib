@@ -14,11 +14,10 @@
  **/
 #ifndef __YEO_RENDERER_H__
 #define __YEO_RENDERER_H__
+#include <yeo/math.hpp>
 #include <memory>
 #include <string>
 
-
-// Generic helper definitions for shared library support
 #if defined _WIN32 || defined __CYGWIN__
     #define YEO_HELPER_DLL_IMPORT __declspec(dllimport)
     #define YEO_HELPER_DLL_EXPORT __declspec(dllexport)
@@ -40,9 +39,9 @@
         #define YEO_API YEO_HELPER_DLL_EXPORT
     #else
         #define YEO_API YEO_HELPER_DLL_IMPORT
-    #endif // YEO_DLL_EXPORTS
+    #endif
     #define YEO_LOCAL YEO_HELPER_DLL_LOCAL
-#else // YEO_DLL is not defined: this means FOX is a static lib.
+#else
     #define YEO_API
     #define YEO_LOCAL
 #endif // YEO_DLL
@@ -57,6 +56,10 @@ namespace yeo {
         virtual int ShouldClose() = 0;
         virtual void Clear() = 0;
         virtual std::string GetVersion() = 0;
+        virtual void SetViewport(int x, int y, int width, int height) = 0;
+        virtual void GetFramebufferSize(int* width, int* height) = 0;
+        virtual void SetProjectionMatrix(const float4x4& matrix) = 0;
+        virtual void SetViewMatrix(const float4x4& matrix) = 0;
     };
     
     class Renderer {
@@ -64,6 +67,7 @@ namespace yeo {
         virtual ~Renderer(){};
         virtual std::shared_ptr<Device> CreateDevice() = 0;
         virtual void PollEvents() = 0;
+        virtual void WaitEvents() = 0;
     };
     
 };

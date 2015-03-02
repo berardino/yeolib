@@ -43,8 +43,19 @@
 #define YEO_LOCAL
 #endif // YEO_DLL
 
+#include <memory>
+#include <string>
 
 namespace yeo {
+class Scene {
+public:
+	virtual ~Scene() {
+	}
+	;
+};
+
 }
+
+YEO_API std::shared_ptr<yeo::Scene> YeoLoadScene(const std::string& path);
 
 #endif //__YEO_IO_H__

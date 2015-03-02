@@ -14,11 +14,42 @@
  **/
 
 #include <yeo/io.hpp>
+
 #include <FreeImage.h>
 #include <dae.h>
 #include <dom/domConstants.h>
 #include <dom/domCOLLADA.h>
+#include <dom/domGeometry.h>
+#include <iostream>
 #define YEO_DLL_EXPORTS
 
 using namespace yeo;
+using namespace std;
+using namespace ColladaDOM150;
 
+class ColladaScene: public Scene {
+private:
+	DAE dae;
+	domCOLLADAProxy* domProxy;
+
+public:
+	ColladaScene(const string& path) {
+		domProxy = dae.open(path);
+
+		// get vector containing the geometry objects
+		std::vector<domGeometry*> geometries = dae.getDatabase()->typeLookup<
+				domGeometry>();
+
+		std::cout << "File contains " << geometries.size()
+				<< " geometry objects." << std::endl;
+
+	}
+
+	~ColladaScene() {
+	}
+
+};
+
+YEO_API shared_ptr<Scene> YeoLoadScene(const string& path) {
+	return shared_ptr<Scene>(new ColladaScene(path));
+}

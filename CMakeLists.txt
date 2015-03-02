@@ -6,7 +6,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${yeolib_BINARY_DIR}/lib")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${yeolib_BINARY_DIR}/bin")
 
 option(BUILD_EXAMPLES "Build examples." on)
-list( APPEND CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
+add_compile_options(-std=c++11 -stdlib=libc++)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 include_directories(include /opt/local/include)

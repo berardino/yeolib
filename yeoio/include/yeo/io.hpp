@@ -49,9 +49,7 @@
 namespace yeo {
 class Scene {
 public:
-	virtual ~Scene() {
-	}
-	;
+	virtual ~Scene() {};
 };
 
 }

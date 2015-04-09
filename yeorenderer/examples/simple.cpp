@@ -49,6 +49,9 @@ int main() {
     program->Attach(fShader);
     program->Link();
 
+
+    auto scene = YeoLoadScene("../../resources/models/1.5/cube.dae");
+
     static const float g_vertex_buffer_data[] = {
         -1.0f, -1.0f, 0.0f, 1.0f,
         -1.0f, 0.0f, 0.0f, 1.0f, 0.0f, };

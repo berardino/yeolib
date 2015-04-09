@@ -78,7 +78,7 @@ public:
         glDeleteBuffers(1, &_vbo);
     }
 
-    void Write(ptrdiff_t size, const void* data, Usage usage) {
+    void Write(unsigned int size, const void* data, Usage usage) {
         Bind();
         GLenum glUsage = GL_BUFFER_USAGE_MAP.find(usage)->second;
         glBufferData(_target, size, data, glUsage);
@@ -184,6 +184,10 @@ private:
         return (*(InputElementDesc::Builder<>*) this);
     }
 public:
+    OpenGLInputElementDescBuilder() :
+    _index(0), _stride(0), _pointer((GLvoid*)0), _normalized(false) {
+    }
+
     ~OpenGLInputElementDescBuilder() {
     }
 

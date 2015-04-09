@@ -14,6 +14,7 @@
  **/
 
 #include <yeo/io.hpp>
+#include <yeo/renderer.hpp>
 
 #include <FreeImage.h>
 #include <dae.h>
@@ -21,6 +22,7 @@
 #include <dom/domCOLLADA.h>
 #include <dom/domGeometry.h>
 #include <iostream>
+
 #define YEO_DLL_EXPORTS
 
 using namespace yeo;
@@ -29,21 +31,53 @@ using namespace ColladaDOM150;
 
 class ColladaScene: public Scene {
 private:
-	DAE dae;
-	domCOLLADAProxy* domProxy;
+	DAE _dae;
+	domCOLLADAProxy* _domProxy;
+    const string& _path;
+
 
 public:
-	ColladaScene(const string& path) {
-		domProxy = dae.open(path);
-
-		// get vector containing the geometry objects
-		std::vector<domGeometry*> geometries = dae.getDatabase()->typeLookup<
-				domGeometry>();
-
-		std::cout << "File contains " << geometries.size()
-				<< " geometry objects." << std::endl;
-
+    ColladaScene(const string& path) : _path(path) {
 	}
+
+    void Load(yeo::Device<>::Ref device) {
+        _domProxy = _dae.open(_path);
+        // get vector containing the geometry objects
+        std::vector<domGeometry*> geometries = _dae.getDatabase()->typeLookup<domGeometry>();
+        std::map<std::string,yeo::Buffer::Ref> buffers;
+        for(auto geometry : geometries) {
+            auto mesh = geometry->getMesh();
+            auto sources = mesh->getSource_array();
+            for(int i = 0; i < sources.getCount(); i++) {
+                auto source = sources[i];
+                auto floats = source->getFloat_array();
+                unsigned int numVertex = floats->getCount();
+                unsigned int size =  numVertex * sizeof(float);
+                auto buffer = device->CreateVertexBuffer();
+                buffer->Write(size, floats->getValue().getRawData());
+                buffers.insert(std::pair<string,Buffer::Ref>(source->getId(), buffer));
+
+                auto technique = source->getTechnique_common();
+                auto accessor = technique->getAccessor();
+                auto offset = accessor->getOffset();
+                auto layout = device->CreateInputLayout()->
+                    Element()
+                        .Size(accessor->getStride())
+                        .Type(InputElementDesc::Type::FLOAT)
+                        .Stride((numVertex/accessor->getCount()) - accessor->getStride())
+                    .Add()
+                .Build();
+
+                auto vertexInput = mesh->getVertices()->getInput_array();
+
+
+            }
+        }
+
+        std::cout << "File contains " << geometries.size() << " geometry objects." << std::endl;
+        
+
+    }
 
 	~ColladaScene() {
 	}

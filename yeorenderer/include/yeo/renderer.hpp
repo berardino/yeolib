@@ -57,7 +57,7 @@ public:
 	virtual ~Buffer() {
 	}
 	;
-	virtual void Write(ptrdiff_t size, const void* data, Usage usage =
+	virtual void Write(unsigned int size, const void* data, Usage usage =
 			STATIC_DRAW) = 0;
 	virtual void Bind() = 0;
 };
